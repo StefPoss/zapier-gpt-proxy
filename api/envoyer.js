@@ -19,7 +19,10 @@ export default async function handler(req, res) {
   try {
     // 1. Récupérer toutes les cartes du board Trello
     const cardsResponse = await fetch(
-      \`https://api.trello.com/1/boards/\${TRELLO_BOARD_ID}/cards?fields=name&key=\${TRELLO_KEY}&token=\${TRELLO_TOKEN}\`
+      const cardsResponse = await fetch(
+  `https://api.trello.com/1/boards/${TRELLO_BOARD_ID}/cards?fields=name&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
+)
+
     )
 
     const cards = await cardsResponse.json()
@@ -35,7 +38,8 @@ export default async function handler(req, res) {
     const nextNum = nums.length ? Math.max(...nums) + 1 : 1
 
     // 3. Construire le titre avec incrémentation
-    const title = \`#\${nextNum} \${rawTitle}\`
+    const title = `#${nextNum} ${rawTitle}`
+
 
     // 4. Appeler Zapier MCP avec title + description
     const zapierResponse = await fetch(ZAPIER_MCP_URL, {
