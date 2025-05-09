@@ -17,7 +17,7 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ input: message })
+      body: JSON.stringify({ message })
     })
 
     const text = await response.text()
