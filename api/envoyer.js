@@ -40,7 +40,13 @@ export default async function handler(req, res) {
       body: JSON.stringify({ name, desc }) // Zapier attend "name" et "desc"
     })
 
-    const result = await zapierResponse.text()
+    let result
+try {
+  result = await zapierResponse.json()
+} catch {
+  result = await zapierResponse.text()
+}
+
 
     res.status(200).json({
       success: true,
