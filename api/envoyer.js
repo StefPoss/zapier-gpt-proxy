@@ -5,13 +5,24 @@ export default async function handler(req, res) {
 
   const { message } = req.body
 
-  // Log utile dans les logs Vercel (onglet Functions)
-  console.log("Message reçu dans le proxy :", message)
+  try {
+    const response = await fetch("https://httpbin.org/post", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message })
+    })
 
-  // Réponse directe sans fetch
-  return res.status(200).json({
-    success: true,
-    echo: message,
-    note: "Le proxy fonctionne. Le fetch vers Zapier est temporairement désactivé."
-  })
+    const result = await response.json()
+
+    return res.status(200).json({
+      success: true,
+      sentTo: "https://httpbin.org/post",
+      echo: message,
+      response: result
+    })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
 }
