@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     })
 
     const text = await response.text()
-    return res.status(response.ok ? 200 : response.status).json({ result: text })
+    res.status(response.ok ? 200 : response.status).json({ success: true, zapier: text })
   } catch (err) {
     res.status(500).json({ error: err.message })
   }
