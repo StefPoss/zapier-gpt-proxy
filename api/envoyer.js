@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   const { message } = req.body
 
-  const zapierUrl = "https://mcp.zapier.com/api/mcp/s/ODUyMzM2OTEtZWU3ZS00Y2NiLThhODgtYTI4NDU5NjY2NGRjOjI0OWQ5OTZlLTlkMTctNDJmYi1iMGFiLTIxYzUyYmUwNTEyOQ==/sse"
+  const zapierUrl = "https://mcp.zapier.com/api/mcp/s/NjZkODBiNTMtMGQyOS00OTgyLWJmZGItMmRmY2YwOGU2ZDQyOjRhOTBkNWE1LWIwNWEtNGRhNy05MzUxLTQxNDA5MWFmZmRiMQ==/sse"
 
   try {
     const response = await fetch(zapierUrl, {
