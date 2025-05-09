@@ -17,7 +17,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Récupération des cartes du board Trello
     const cardsResponse = await fetch(
       `https://api.trello.com/1/boards/${TRELLO_BOARD_ID}/cards?fields=name&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
     )
@@ -35,12 +34,10 @@ export default async function handler(req, res) {
     const name = `#${nextNum} ${title}`
     const desc = description
 
-    console.log("Envoi au Webhook Zapier avec :", { name, desc })
-
     const zapierResponse = await fetch(ZAPIER_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, desc })
+      body: JSON.stringify({ name, desc }) // Zapier attend "name" et "desc"
     })
 
     const result = await zapierResponse.text()
@@ -51,7 +48,6 @@ export default async function handler(req, res) {
       zapier: result
     })
   } catch (err) {
-    console.error("Erreur proxy vers Zapier :", err)
     res.status(500).json({
       error: err.message || "Erreur serveur",
       detail: typeof err === 'object' ? JSON.stringify(err, null, 2) : String(err)
