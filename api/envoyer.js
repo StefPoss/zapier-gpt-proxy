@@ -49,8 +49,12 @@ export default async function handler(req, res) {
       sent: { title, description },
       zapier: result
     })
-  } catch (err) {
-    console.error("Erreur proxy vers Zapier:", err)
-    res.status(500).json({ error: err.message || "Erreur serveur" })
-  }
+} catch (err) {
+  console.error("Erreur proxy vers Zapier :", err)
+  res.status(500).json({
+    error: err.message || "Erreur serveur",
+    detail: typeof err === 'object' ? JSON.stringify(err, null, 2) : String(err)
+  })
+}
+
 }
