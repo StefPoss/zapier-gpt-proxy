@@ -3,10 +3,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Méthode non autorisée" })
   }
 
-  const { message } = req.body
+  const { title, description } = req.body
 
-  if (!message) {
-    return res.status(400).json({ error: "Champ 'message' manquant" })
+  if (!title || !description) {
+    return res.status(400).json({ error: "Champs 'title' et 'description' requis" })
   }
 
   const zapierUrl = "https://hooks.zapier.com/hooks/catch/3142659/2nqlanh/"
@@ -17,15 +17,11 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ message })
+      body: JSON.stringify({ title, description })
     })
 
     const result = await response.text()
-
-    return res.status(200).json({
-      success: true,
-      zapier: result
-    })
+    return res.status(200).json({ success: true, zapier: result })
   } catch (err) {
     return res.status(500).json({ error: err.message })
   }
