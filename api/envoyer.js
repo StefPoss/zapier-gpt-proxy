@@ -39,7 +39,8 @@ export default async function handler(req, res) {
     const zapierResponse = await fetch(ZAPIER_MCP_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: title, desc: description })
+      body: JSON.stringify({ title, description })
+
     })
 
     const result = await zapierResponse.text()
