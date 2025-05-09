@@ -17,14 +17,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Récupération des cartes du board
     const cardsResponse = await fetch(
       `https://api.trello.com/1/boards/${TRELLO_BOARD_ID}/cards?fields=name&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
     )
 
     const cards = await cardsResponse.json()
 
-    // Extraction des #num
     const nums = cards
       .map(card => {
         const match = card.name.match(/^#(\d+)/)
@@ -36,7 +34,6 @@ export default async function handler(req, res) {
     const title = `#${nextNum} ${rawTitle}`
     const description = rawDescription
 
-    // Envoi à Zapier MCP
     const zapierResponse = await fetch(ZAPIER_MCP_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -51,6 +48,7 @@ export default async function handler(req, res) {
       zapier: result
     })
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    console.error("Erreur proxy vers Zapier:", err)
+    res.status(500).json({ error: err.message || "Erreur serveur" })
   }
 }
