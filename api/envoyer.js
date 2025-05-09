@@ -5,21 +5,13 @@ export default async function handler(req, res) {
 
   const { message } = req.body
 
-  const zapierUrl = "https://mcp.zapier.com/api/mcp/s/NjZkODBiNTMtMGQyOS00OTgyLWJmZGItMmRmY2YwOGU2ZDQyOjRhOTBkNWE1LWIwNWEtNGRhNy05MzUxLTQxNDA5MWFmZmRiMQ==/sse"
+  // Log utile dans les logs Vercel (onglet Functions)
+  console.log("Message reçu dans le proxy :", message)
 
-  try {
-    const response = await fetch(zapierUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ message })
-    })
-
-    const result = await response.text()
-
-    res.status(200).json({ success: true, zapier: result })
-  } catch (err) {
-    res.status(500).json({ error: err.message })
-  }
+  // Réponse directe sans fetch
+  return res.status(200).json({
+    success: true,
+    echo: message,
+    note: "Le proxy fonctionne. Le fetch vers Zapier est temporairement désactivé."
+  })
 }
