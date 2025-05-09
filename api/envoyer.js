@@ -1,0 +1,22 @@
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Méthode non autorisée" })
+  }
+
+  const { message } = req.body
+
+  const zapierUrl = "https://mcp.zapier.com/api/mcp/s/ODUyMzM2OTEtZWU3ZS00Y2NiLThhODgtYTI4NDU5NjY2NGRjOjI0OWQ5OTZlLTlkMTctNDJmYi1iMGFiLTIxYzUyYmUwNTEyOQ==/sse"
+
+  try {
+    const response = await fetch(zapierUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    })
+
+    const text = await response.text()
+    return res.status(response.ok ? 200 : response.status).json({ result: text })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+}
