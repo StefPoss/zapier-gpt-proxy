@@ -5,8 +5,14 @@ export default async function handler(req, res) {
 
   const { message } = req.body
 
+  if (!message) {
+    return res.status(400).json({ error: "Champ 'message' manquant" })
+  }
+
+  const zapierUrl = "https://hooks.zapier.com/hooks/catch/3142659/2nqlanh/"
+
   try {
-    const response = await fetch("https://httpbin.org/post", {
+    const response = await fetch(zapierUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -14,15 +20,13 @@ export default async function handler(req, res) {
       body: JSON.stringify({ message })
     })
 
-    const result = await response.json()
+    const result = await response.text()
 
     return res.status(200).json({
       success: true,
-      sentTo: "https://httpbin.org/post",
-      echo: message,
-      response: result
+      zapier: result
     })
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: err.message })
   }
 }
