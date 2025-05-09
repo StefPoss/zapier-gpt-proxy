@@ -17,45 +17,37 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 1. Récupérer toutes les cartes du board Trello
+    // 1. Récupérer les cartes du board
     const cardsResponse = await fetch(
-      const cardsResponse = await fetch(
-  `https://api.trello.com/1/boards/${TRELLO_BOARD_ID}/cards?fields=name&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
-)
-
+      `https://api.trello.com/1/boards/${TRELLO_BOARD_ID}/cards?fields=name&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
     )
 
     const cards = await cardsResponse.json()
 
-    // 2. Extraire tous les #num
+    // 2. Trouver les #num
     const nums = cards
       .map(card => {
         const match = card.name.match(/^#(\d+)/)
         return match ? parseInt(match[1], 10) : null
       })
-      .filter(n => n !== null && n < 90)
+      .filter(n => n !== null)
 
     const nextNum = nums.length ? Math.max(...nums) + 1 : 1
+    const name = `#${nextNum} ${rawTitle}`
+    const desc = rawDescription
 
-    // 3. Construire le titre avec incrémentation
-    const title = `#${nextNum} ${rawTitle}`
-
-
-    // 4. Appeler Zapier MCP avec title + description
+    // 3. Envoyer à Zapier MCP
     const zapierResponse = await fetch(ZAPIER_MCP_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title,
-        description: rawDescription
-      })
+      body: JSON.stringify({ name, desc })
     })
 
     const result = await zapierResponse.text()
 
     res.status(200).json({
       success: true,
-      sent: { title, description: rawDescription },
+      sent: { name, desc },
       zapier: result
     })
   } catch (err) {
