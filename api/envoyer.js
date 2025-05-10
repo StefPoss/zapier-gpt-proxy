@@ -17,29 +17,29 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Récupérer les cartes du board
+    // 1. Récupérer les cartes du board Trello
     const cardsResponse = await fetch(
       `https://api.trello.com/1/boards/${TRELLO_BOARD_ID}/cards?fields=name&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
     )
 
     const cards = await cardsResponse.json()
 
-    // Extraire les numéros valides
+    // 2. Extraire les numéros valides dans les titres des cartes
     const nums = cards
       .map(card => {
-        const match = card.name.match(/^#(\d+)/)  // Extraire les numéros avec #
+        const match = card.name.match(/^#(\d+)/) // extraire uniquement les numéros valides
         return match ? parseInt(match[1], 10) : null
       })
-      .filter(n => n !== null) // Filtrer les numéros non nuls
+      .filter(n => n !== null) // ignorer les cartes sans numéro valide
 
-    // Calculer le prochain numéro en évitant de générer un numéro invalide
+    // 3. Calculer le prochain numéro (en s'assurant qu'il n'y a pas de doublon)
     const nextNum = nums.length ? Math.max(...nums) + 1 : 1
     const name = `#${nextNum} ${title}`
     const desc = description
 
-    console.log("Envoi au Webhook Zapier avec :", { name, desc })
+    console.log("Payload envoyé à Zapier avec :", { name, desc })
 
-    // Envoi au webhook Zapier
+    // 4. Envoyer au Webhook Zapier
     const zapierResponse = await fetch(ZAPIER_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
