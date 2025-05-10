@@ -32,7 +32,7 @@ export default async function handler(req, res) {
       })
       .filter(n => n !== null) // ignorer les cartes sans numéro valide
 
-    // 3. Calculer le prochain numéro (en s'assurant qu'il n'y a pas de doublon)
+    // 3. Calculer le prochain numéro en fonction du max (sans duplication)
     const nextNum = nums.length ? Math.max(...nums) + 1 : 1
     const name = `#${nextNum} ${title}`
     const desc = description
