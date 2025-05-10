@@ -43,7 +43,7 @@ export default async function handler(req, res) {
     const zapierResponse = await fetch(ZAPIER_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, desc })
+      body: JSON.stringify({ title: name, description: desc })
     })
 
     const result = await zapierResponse.text()
